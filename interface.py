@@ -23,13 +23,13 @@ class Interface():
             if mode == '1':
                 # Views all of our inventory
                 Videos.view_video_inventory()
+                Videos.video_list.clear()
                 input("\nHit Enter to continue")
-                break
             elif mode == '2':
                 # Views all of our customers
                 Customers.view_customers_videos()
+                Customers.customer_list.clear()
                 input("\nHit Enter to continue")
-                break
             elif mode == '3':
                 # Builds our list of customers
                 Customers.get_customers_videos()
@@ -41,16 +41,14 @@ class Interface():
                 Interface.update_customer()
                 input("\nVideo rented!\nHit Enter to continue")
                 # I need to break otherwise I'll keep on adding to the list of customers :P
-                break
             elif mode == '4':
                 Videos.return_video()
                 input("\nHit Enter to continue")
-                break
             elif mode == '5':
                 Customers.add_customer()
+                Customers.customer_list.clear()
                 print("Customer added!")
                 input("Hit Enter to continue")
-                break
             elif mode == '9':
                 print("Exiting program")
                 time.sleep(1)

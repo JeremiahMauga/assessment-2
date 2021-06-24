@@ -1,6 +1,7 @@
 import os.path
 import csv
 
+
 my_path = os.path.abspath(os.path.dirname(__file__))
 video_path = os.path.join(my_path, "../data/inventory.csv")
 
@@ -26,7 +27,8 @@ class Videos:
         Videos.get_video_inventory()
         for line in Videos.video_list:
             print(f"ID: {line['id']} TITLE: {line['title']} RATING: {line['rating']} COPIES AVAILABLE: {line['copies_available']}")
-    
+        
+
     def rent_video():
         # Gets the inventory of videos
         Videos.view_video_inventory()
@@ -36,8 +38,13 @@ class Videos:
             if key['id'] == rented_video_id:
                 Videos.video_title.append(key['title'])
                 new_value = int(key['copies_available'])
-                new_value -= 1
-                key['copies_available'] = str(new_value)
+                if new_value == 0:
+                    print("Not available!")
+                    Videos.video_list.clear()
+                    Videos.rent_video()
+                else:
+                    new_value -= 1
+                    key['copies_available'] = str(new_value)
         # Rewriting and appending our new data to the inventory.csv file
         field_names = ['id','title','rating','copies_available']
         with open(video_path, "w") as csvfile:
