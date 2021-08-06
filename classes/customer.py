@@ -7,6 +7,7 @@ customer_path = os.path.join(my_path, "../data/customers.csv")
 
 class Customers:
     customer_list = []
+    customer_name = ""
     
     def __init__(self):
         pass
@@ -18,20 +19,30 @@ class Customers:
             for line in read_data:
                 Customers.customer_list.append(line)  
             
-    # Prints out all data from the new list     
+    # Prints out all data from the new list
+    # Refactored to take in a customers name and only prints out their rented videos     
     def view_customers_videos():
+        Customers.customer_list.clear()
         Customers.get_customers_videos()
         for line in Customers.customer_list:
-            print(f"ID: {line['id']} NAME: {line['last_name']} CURRENT VIDEOS: {line['current_video_rentals']}")
-    
+            # print(f"ID: {line['id']} NAME: {line['last_name']} CURRENT VIDEOS: {line['current_video_rentals']}")
+            print(f"NAME: {line['last_name']}")
+        id = input("Enter Customer Name: ")
+        Customers.customer_name = id
+        for line in Customers.customer_list:
+            if id == line['last_name']:
+                print("Match!")
+                print(f"Videos checked out: {line['current_video_rentals']}")
+        
     # Add a new customer to our customer.csv file
-    def add_customer():
+    # Only adds one customer and breaks out of the loop
+    def add_customer():      
         Customers.get_customers_videos()
         # Getting new user input
-        id = input("Enter Id: ")
+        id = input("Enter New Id: ")
         # Check to see if the Id input already exists or not
-        for key in range(len(Customers.customer_list)):
-            if id == Customers.customer_list[key]['id']:
+        for line in (Customers.customer_list):
+            if id == line['id']:
                 print("Id already exists!")
                 Customers.customer_list.clear()
                 Customers.add_customer()
@@ -47,6 +58,6 @@ class Customers:
                         writer = csv.DictWriter(csvfile, fieldnames = field_names)
                         writer.writeheader()
                         writer.writerows(Customers.customer_list)
-        
+            break
     def __str__(self):
        return 

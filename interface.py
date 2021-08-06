@@ -10,7 +10,7 @@ my_path = os.path.abspath(os.path.dirname(__file__))
 customer_path = os.path.join(my_path, "./data/customers.csv")
 
 class Interface():
-    customer_id = 0
+    customer_name = ""
 
     def __init__(self):
         
@@ -35,14 +35,19 @@ class Interface():
                 Customers.get_customers_videos()
                 # Checks for three videos for a customer
                 Interface.check_limit()
-                # Takes a video from inventory
-                Videos.rent_video()
                 # Adds video to an individual customers data
-                Interface.update_customer()
-                input("\nVideo rented!\nHit Enter to continue")
-                # I need to break otherwise I'll keep on adding to the list of customers :P
             elif mode == '4':
-                Videos.return_video()
+                # Builds our list of customers
+                Customers.view_customers_videos()
+                # Creates video title to return
+                rented_video_title = input("Please enter video title to return: ")
+                # Updates the videos csv file
+                Videos.return_video(rented_video_title)
+                # Updates the customers csv file
+                for name in Customers.customer_list:
+                    if Customers.customer_name == name['last_name']:
+                        print(name["last_name"])
+                        
                 input("\nHit Enter to continue")
             elif mode == '5':
                 Customers.add_customer()
@@ -56,35 +61,52 @@ class Interface():
     
     # Updates the customers.csv with rented movie            
     def update_customer():
+        # Takes a video from inventory, Performs checks
+        Videos.video_list.clear()
+        Videos.rent_video()
         # Add the video to the customer lists key value
         for i in Customers.customer_list:
             # Find the customer
-            if i['id'] == str(Interface.customer_id):
+            if i['last_name'] == str(Interface.customer_name):
                 # Place video into customers database
-                video_toAdd = ''.join(Videos.video_title)
-                i['current_video_rentals'] = (f"{i['current_video_rentals']}/{video_toAdd}")
-                # Update data to the original customers.csv
-                field_names = ['id','first_name','last_name','current_video_rentals']
-                with open(customer_path, "w") as csvfile:
-                    writer = csv.DictWriter(csvfile, fieldnames = field_names)
-                    writer.writeheader()
-                    writer.writerows(Customers.customer_list)
-                    break
-            
+                print(type(f"Current Videos: {i['current_video_rentals']}"))
+                if not i['current_video_rentals']:
+                    video_toAdd = ''.join(Videos.video_title)
+                    i['current_video_rentals'] = (f"{i['current_video_rentals']}{video_toAdd}")
+                    # Update data to the original customers.csv
+                    field_names = ['id','first_name','last_name','current_video_rentals']
+                    with open(customer_path, "w") as csvfile:
+                        writer = csv.DictWriter(csvfile, fieldnames = field_names)
+                        writer.writeheader()
+                        writer.writerows(Customers.customer_list)
+                        break
+                else:
+                    video_toAdd = ''.join(Videos.video_title)
+                    i['current_video_rentals'] = (f"{i['current_video_rentals']}/{video_toAdd}")
+                    # Update data to the original customers.csv
+                    field_names = ['id','first_name','last_name','current_video_rentals']
+                    with open(customer_path, "w") as csvfile:
+                        writer = csv.DictWriter(csvfile, fieldnames = field_names)
+                        writer.writeheader()
+                        writer.writerows(Customers.customer_list)
+                        break        
                 
     def check_limit():
         # Check to see if customer has 3 videos already checked out
         # Keeps track of our customers ID
-        Interface.customer_id += int(input("Please enter customer ID: "))
+        Interface.customer_name += input("Please enter customer Name: ")
         for key in Customers.customer_list:
-            if key['id'] == str(Interface.customer_id): 
+            if key['last_name'] == str(Interface.customer_name): 
                 num = key['current_video_rentals'].count('/')
                 print(num)
                 if num >= 2:
                     print("Customer already has 3 videos checked out!")
-                    sys.exit()
+                    Interface.customer_name = ""
+                    Interface.check_limit()
                 else:
-                    pass
+                    Interface.update_customer()
+                    input("\nVideo rented!\nHit Enter to continue")
+                    # I got it to break out of that loop!
             
             
     
