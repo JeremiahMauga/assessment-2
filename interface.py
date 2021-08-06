@@ -36,6 +36,7 @@ class Interface():
                 # Checks for three videos for a customer
                 Interface.check_limit()
                 # Adds video to an individual customers data
+                input("\nVideo rented!\nHit Enter to continue")
             elif mode == '4':
                 # Builds our list of customers
                 Customers.view_customers_videos()
@@ -47,7 +48,7 @@ class Interface():
                 for name in Customers.customer_list:
                     if Customers.customer_name == name['last_name']:
                         print(name["last_name"])
-                        
+
                 input("\nHit Enter to continue")
             elif mode == '5':
                 Customers.add_customer()
@@ -105,7 +106,6 @@ class Interface():
                     Interface.check_limit()
                 else:
                     Interface.update_customer()
-                    input("\nVideo rented!\nHit Enter to continue")
                     # I got it to break out of that loop!
             
             

@@ -37,27 +37,31 @@ class Customers:
     # Add a new customer to our customer.csv file
     # Only adds one customer and breaks out of the loop
     def add_customer():      
+        Customers.customer_list.clear()
         Customers.get_customers_videos()
         # Getting new user input
-        id = input("Enter New Id: ")
+        input_id = input("Enter New Id: ")
         # Check to see if the Id input already exists or not
+        customer_ids = []
         for line in (Customers.customer_list):
-            if id == line['id']:
-                print("Id already exists!")
-                Customers.customer_list.clear()
-                Customers.add_customer()
-            else:
-                first_name = input("Enter first name: ")
-                last_name = input("Enter last name: ")
-                new_data = {'id': f'{id}', 'first_name': f'{first_name}', 'last_name': f'{last_name}', 'current_video_rentals': ''}
-                # Append new user input to our customer list
-                Customers.customer_list.append(new_data)
-                # Appending data with write over our customrs.csv
-                field_names = ['id','first_name','last_name','current_video_rentals']
-                with open(customer_path, "w") as csvfile:
-                        writer = csv.DictWriter(csvfile, fieldnames = field_names)
-                        writer.writeheader()
-                        writer.writerows(Customers.customer_list)
-            break
+            customer_ids.append(line['id'])
+        # Loop through our customer ids
+        customer_ids_set = set(customer_ids)
+        if input_id in customer_ids_set:
+            print("Id already exists!")
+            Customers.add_customer()
+        else:
+            first_name = input("Enter first name: ")
+            last_name = input("Enter last name: ")
+            new_data = {'id': f'{id}', 'first_name': f'{first_name}', 'last_name': f'{last_name}', 'current_video_rentals': ''}
+            # Append new user input to our customer list
+            Customers.customer_list.append(new_data)
+            # Appending data with write over our customrs.csv
+            field_names = ['id','first_name','last_name','current_video_rentals']
+            with open(customer_path, "w") as csvfile:
+                    writer = csv.DictWriter(csvfile, fieldnames = field_names)
+                    writer.writeheader()
+                    writer.writerows(Customers.customer_list)
+            
     def __str__(self):
        return 
